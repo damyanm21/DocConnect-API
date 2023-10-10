@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Specialty\" />
+    <None Remove="Enums\" />
+    <None Remove="Email\" />
+    <None Remove="Token\" />
+    <None Remove="Structs\" />
+    <None Remove="AppointmentDTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocConnect.Data.Models\DocConnect.Data.Models.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Email\" />
+    <Folder Include="Token\" />
+    <Folder Include="Structs\" />
+    <Folder Include="AppointmentDTOs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.10" />
+    <PackageReference Include="Azure.Communication.Email" Version="1.0.0" />
+  </ItemGroup>
+</Project>

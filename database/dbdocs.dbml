@@ -1,0 +1,201 @@
+Project RedTeam {
+    database_type: 'MySQL'
+    Note: '''
+    # Red Team - Doc Connect Database Documentation
+    **Tables**
+    '''
+}
+
+
+Table "specialties" {
+  "specialty_id" INT [pk, increment]
+  "image_url" VARCHAR(2048) [not null, note:'URL to an image representing the specialty']
+  "specialty_name" VARCHAR(60) [not null, note:'Name of the specialty']
+  "created_at" TIMESTAMP [not null, default: `now()`, note:'Timestamp of when this specialty was created']
+  "deleted_at" TIMESTAMP [note:'Timestamp of when this specialty was deleted']
+  "is_deleted" BOOLEAN [not null, default: '0', note:'Wheter this record is deleted or not']
+}
+Table "doctors" {
+  "doctor_id" INT [pk, increment]
+  "doctor_first_name" VARCHAR(80) [not null]
+  "doctor_last_name" VARCHAR(80) [not null]
+  "user_id" VARCHAR(255) [not null, note:'User Account associated with this doctor']
+  "specialty_id" INT [not null, note:'The specialty of this doctor']
+  "location_id" INT [not null, note:'The location of this doctor']
+  "years_of_experience" INT [note:'Years of experience in numbers']
+  "doctor_summary" TEXT [note: 'Includes info as: past employment, certifications, etc']
+  "education_summary" TEXT [note:'Contains info regarding all the education that doctor has']
+  "image_url" VARCHAR(2048) [not null, note:'Relative path on the Azure Blob Storage to the profile image. Ex: image/generated_0.png']
+  "doctor_address" VARCHAR(100) [not null, note:'Personal address of the doctor']
+}
+Table "patients" {
+  "patient_id" INT [pk, increment]
+  "user_id" VARCHAR(255) [note: 'User account associated with this patient']
+}
+Table "countries" {
+  "country_id" INT [pk, increment, note:'ISO 3166 three-digit country number']
+  "country_name" VARCHAR(56) [not null, note:'The name of the country']
+  "iso2_name" CHAR(2) [not null, note:'ISO 3166 two-letter country codes']
+  "iso3_name" CHAR(3) [not null, note:'ISO 3166 three-letter country codes']
+  "created_at" TIMESTAMP [not null, default: `now()`, note:'When was this record created']
+  "deleted_at" TIMESTAMP [note:'When was this record deleted']
+  "is_deleted" BOOLEAN [not null, default: `0`, note:'Whether this record is deleted or not']
+}
+Table "locations"{
+  "location_id" INT [pk, increment]
+  "country_id" INT [not null, note:'ISO 3166 three-digit country number']
+  "city_name" VARCHAR(80) [not null, note:'The name of the city/town as a Unicode string (e.g. Goiânia)']
+  "city_ascii" VARCHAR(80) [not null, note:'ASCII string of the city/town (e.g. Goiania)']
+  "latitude" DECIMAL(7,4) [not null, note:'The latitude of the city/town']
+  "longitude" DECIMAL(7,4) [not null, note:'The longitude of the city/town']
+  "admin_name" VARCHAR(80) [not null, note:'The State (US) / Department (PY) / District (BG) that administers this city/town']
+  "created_at" TIMESTAMP [not null, default: `now()`, note:'When was this record created']
+  "deleted_at" TIMESTAMP [note:'When was this record deleted']
+  "is_deleted" BOOLEAN [not null, default: `0`, note:'Whether this record is deleted or not']
+}
+Table "ratings"{
+  "rating_id" INT [pk, increment]
+  "doctor_id" INT [not null, note:'The doctor that is being rated']
+  "patient_id" INT [not null, note:'The patient that is rating']
+  "created_At" TIMESTAMP [not null, note:'The date and time the rating wad posted']
+  "rating" INT [not null, note:'The rating value measured by 1-5 scale']
+  "comments" VARCHAR(500) [not null, note:'The comment that the patient left for this doctor, between 3-500 characters']
+}
+Table "appointments"{
+  "appointment_id" INT [pk, increment]
+  "doctor_id" INT [not null, note:'The doctor that is going to attend']
+  "patient_id" INT [not null, note:'The patient that is going to be attended']
+  "scheduled_time" TIMESTAMP [not null, note:'When this appointment is scheduled for']
+  "appointment_notes" TEXT [note:'Here goes any additional notes that the patient want to include into the appointment. i.e. This appointment is for a child']
+  "created_at" TIMESTAMP [not null, default: `0`, note:'The date and time the appointment was created']
+  "deleted_at" TIMESTAMP [note:'When was this record deleted']
+  "canceled_at" TIMESTAMP [note:'When was this appointment canceled']
+  "is_deleted" BOOLEAN [not null, default:`0`,note:'Wheter this record is deleted or not']
+  "is_canceled" BOOLEAN [not null, default:`0`, note:'If this appointment has been canceled']
+}
+
+Table "AspNetRoleClaims" {
+  "Id" int [pk, not null, increment]
+  "RoleId" varchar(255) [not null]
+  "ClaimType" longtext
+  "ClaimValue" longtext
+
+Indexes {
+  RoleId [name: "IX_AspNetRoleClaims_RoleId"]
+}
+}
+
+Table "AspNetRoles" {
+  "Id" varchar(255) [pk, not null]
+  "Name" varchar(256) [default: NULL]
+  "NormalizedName" varchar(256) [default: NULL]
+  "ConcurrencyStamp" longtext
+
+Indexes {
+  NormalizedName [unique, name: "RoleNameIndex"]
+}
+}
+
+Table "AspNetUserClaims" {
+  "Id" int [pk, not null, increment]
+  "UserId" varchar(255) [not null]
+  "ClaimType" longtext
+  "ClaimValue" longtext
+
+Indexes {
+  UserId [name: "IX_AspNetUserClaims_UserId"]
+}
+}
+
+Table "AspNetUserLogins" {
+  "LoginProvider" varchar(128) [not null]
+  "ProviderKey" varchar(128) [not null]
+  "ProviderDisplayName" longtext
+  "UserId" varchar(255) [not null]
+
+Indexes {
+  UserId [name: "IX_AspNetUserLogins_UserId"]
+  (LoginProvider, ProviderKey) [pk]
+}
+}
+
+Table "AspNetUserRoles" {
+  "UserId" varchar(255) [not null]
+  "RoleId" varchar(255) [not null]
+
+Indexes {
+  RoleId [name: "IX_AspNetUserRoles_RoleId"]
+  (UserId, RoleId) [pk]
+}
+}
+
+Table "AspNetUserTokens" {
+  "UserId" varchar(255) [not null]
+  "LoginProvider" varchar(128) [not null]
+  "Name" varchar(128) [not null]
+  "Value" longtext
+
+Indexes {
+  (UserId, LoginProvider, Name) [pk]
+}
+}
+
+Table "AspNetUsers" {
+  "Id" varchar(255) [pk, not null]
+  "FirstName" longtext [not null]
+  "LastName" longtext [not null]
+  "UserName" varchar(256) [default: NULL]
+  "NormalizedUserName" varchar(256) [default: NULL]
+  "Email" varchar(256) [default: NULL]
+  "NormalizedEmail" varchar(256) [default: NULL]
+  "EmailConfirmed" tinyint(1) [not null]
+  "PasswordHash" longtext
+  "SecurityStamp" longtext
+  "ConcurrencyStamp" longtext
+  "PhoneNumber" longtext
+  "PhoneNumberConfirmed" tinyint(1) [not null]
+  "TwoFactorEnabled" tinyint(1) [not null]
+  "LockoutEnd" datetime(6) [default: NULL]
+  "LockoutEnabled" tinyint(1) [not null]
+  "AccessFailedCount" int [not null]
+
+Indexes {
+  NormalizedUserName [unique, name: "UserNameIndex"]
+  NormalizedEmail [name: "EmailIndex"]
+}
+}
+
+Table "__EFMigrationsHistory" {
+  "MigrationId" varchar(150) [pk, not null]
+  "ProductVersion" varchar(32) [not null]
+}
+
+Ref "FK_AspNetRoleClaims_AspNetRoles_RoleId":"AspNetRoles"."Id" < "AspNetRoleClaims"."RoleId" [delete: cascade]
+
+Ref "FK_AspNetUserClaims_AspNetUsers_UserId":"AspNetUsers"."Id" < "AspNetUserClaims"."UserId" [delete: cascade]
+
+Ref "FK_AspNetUserLogins_AspNetUsers_UserId":"AspNetUsers"."Id" < "AspNetUserLogins"."UserId" [delete: cascade]
+
+Ref "FK_AspNetUserRoles_AspNetRoles_RoleId":"AspNetRoles"."Id" < "AspNetUserRoles"."RoleId" [delete: cascade]
+
+Ref "FK_AspNetUserRoles_AspNetUsers_UserId":"AspNetUsers"."Id" < "AspNetUserRoles"."UserId" [delete: cascade]
+
+Ref "FK_AspNetUserTokens_AspNetUsers_UserId":"AspNetUsers"."Id" < "AspNetUserTokens"."UserId" [delete: cascade]
+
+Ref "FK_Doctors_Specialties": "doctors"."specialty_id" < "specialties"."specialty_id"
+
+Ref "FK_Ratings_Doctors": "ratings"."doctor_id" < "doctors"."doctor_id" 
+
+Ref "FK_Ratings_Patients": "ratings"."patient_id" < "patients"."patient_id"
+
+Ref "FK_Doctors_Location": "doctors"."location_id" < "locations"."location_id"
+
+Ref "FK_Locations_Countries": "locations"."country_id" < "countries"."country_id"
+
+Ref "FK_Doctors_AspNetUsers": "doctors"."user_id" < "AspNetUsers"."Id"
+
+Ref "FK_Patients_AspNetUsers": "patients"."user_id" < "AspNetUsers"."Id"
+
+Ref "FK_appointments_doctors": "appointments"."doctor_id" < "doctors"."doctor_id"
+
+Ref "Fk_appointments_patients": "appointments"."patient_id" < "patients"."patient_id"
