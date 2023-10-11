@@ -2,10 +2,10 @@
 
 ## Here is a setup guide to run the DocConnect Presentation API:
 
-1. Make sure you have .NET SDK 6.0 installed
-`dotnet sdk install --version 6.0.0` 
+1. Make sure you have .NET SDK 7.0 installed
+`dotnet sdk install --version 7.0.0` 
 For windows PowerShell use 
-`winget install Microsoft.DotNet.SDK.6`
+`winget install Microsoft.DotNet.SDK.7`
 
 2. Open a terminal in the "DocConnect" directory
 
